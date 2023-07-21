@@ -72,10 +72,11 @@ export PATH=$PATH:$ANDROID_HOME/platform-tools
 14 - Iniciar a aplicação: `npx react-native run-android`
 
 OBS: Tive problemas. `Erro: javax.net.ssl.SSLHandshakeException: PKIX path building failed: sun.security.provider.certpath.SunCertPathBuilderException: unable to find valid certification path to requested target`.
-Também tive que abrir o projeto criado dentro do android Studio para ele baixar as dependências.
 
+Solução: 
+1 - Também tive que abrir o projeto criado dentro do android Studio para ele baixar as dependências.
 
-Solução: Tive que setar o proxy no Android Studio: File > Settings > System Settings > HTTP Proxy 
+2 - Tive que setar o proxy no Android Studio: File > Settings > System Settings > HTTP Proxy 
 
 
 # Criando um novo projeto
@@ -85,3 +86,231 @@ Para criar um novo projeto rode o comando: `npx react-native init nome-do-projet
 Em seguida entre na pasta do projeto e digite: `npx react-native run-android`
 
 O deploy da aplicação será feito dentro do emulador do android studio. Você pode abrir a pasta do projeto no vscodea alterar o texto do arquivo App.tsx para testar o ambiente.
+
+É muito interessante instalar o plugin do vscode Material Icon Theme pois ajuda muito visualmente para identificarar os arquivos do projeto
+
+# Iniciando um projeto já criado
+
+1 - Abra o emulador
+
+2 - Digite `npx react-native start`
+
+3 - Digite a para iniciar o projeto no emulador android
+
+# Dificuldades
+
+Como subir o projeto? 
+
+* Mesmo fechando a IDE do android studio, um processo ficou travado e a IDE não subia novamente para poder subir o emulador. Solução: Tive que matar o processo na mão ou fazer logoff;
+
+* Não esquecer de setar as variáveis de ambiente que está na documentação;
+
+
+# Começando o cruso pra valer
+
+# O que é um componente?
+
+
+Componentes permitem dividir a interface do usuário em partes independentes, reutilizáveis, ou seja, trata cada parte da aplicação como um bloco isolado, livre de outras dependências externas. Componentes são como funções JavaScript. Eles aceitam entradas e retornam elementos React que descrevem o que deve aparecer na tela. Existem componentes baseados em funções e baseados em classes.
+
+No javascript há várias maneiras de declarar uma função (neste caso, cada função é chamada de componente).
+Perceba que no fim do arquivo sempre devemos exportar a função
+
+Função normal (Function Declaration):
+```
+    import React from 'react'
+    import { Text } from 'react-native'
+
+    function App() {
+        return <Text>Primeiro Componente!</Text>
+
+    }
+    export default App
+```
+Função anônima (Function Expression)
+
+```
+    import React from 'react'
+    import { Text } from 'react-native'
+
+    const App = function () {
+        return <Text>Primeiro Componente!</Text>
+
+    }
+    export default App
+
+```
+Também é possível exportar uma função de maneira direta:
+
+```
+    import React from 'react'
+    import { Text } from 'react-native'
+
+    export default function () {
+        return <Text>Primeiro Componente!</Text>
+    }
+```
+Há outra maneira de simplificar a função transfomando-a em uma Arrow Function
+
+```
+    import React from 'react'
+    import { Text } from 'react-native'
+
+    export default () => {
+        return <Text>Primeiro Componente!</Text>
+    }
+```
+
+Tem como siplificar ainda mais uma Arrow Function:
+
+
+```
+    import React from 'react'
+    import { Text } from 'react-native'
+
+    export default () => <Text>Primeiro Componente!</Text>
+```
+
+# Primeiro componente e Sistema de Módulos do ECMAScript
+
+Ordem normalmente usada para os compoentes: index acessa o App e o App acesso os componentes. Impostante: O arquivo .js que contém os componentes deve ter a primeira letra maiúscula.
+
+Criamos um arquivo com o nome Multi.js com o seguinte conteudo:
+
+```
+import React from 'react'
+import { Text } from 'react-native'
+
+export default () => <Text>PRIMEIRO</Text>
+
+```
+No arquivo App.js ficou da seguinte forma:
+
+```
+import React from 'react'
+import { Text, View } from 'react-native'
+
+import Primeiro from './componentes/Primeiro'
+import { Comp1, Comp2 } from './componentes/Multi'
+import Comp3 from './componentes/Multi'
+
+export default () => (
+    <View>
+        <Comp1 />
+        <Comp2 />
+        <Comp3 />
+        <Primeiro/>    
+    </View>
+
+)
+```
+Desta forma, o arquivo App.js consume os componentes que estão no arquivo Multi.js
+
+Parecido com o python, o react também importa 'módulos' para serem consumidos pelo código. EX:
+
+```
+import React from 'react'
+import { Text } from 'react-native'
+```
+
+Na primeira linha, note que o `React` não está entre chaves, isso porque o módulo `React` foi exportado da maneira default conforme abaixo (ultima linha do código):
+```
+    function React() {
+        return <Text>Primeiro Componente!</Text>
+
+    }
+    export default React
+```
+
+Neste segundo exemplo, note que o `{ Text }`, do código acima, está entre chaves, pois o export foi feito diretamente na função. Note também que a função é nominada. Veja o exemplo:
+
+```
+export function Text() (
+    return 'Olá'
+)
+```
+Sendo assim, concluimos que um módulo ou componente deve ser importado de acordo como é realizado o export.
+
+# Aplicando um pouco de estilo na aplicação
+
+A maneira correta de aplicar estilo em um determinado componente, é criar um arquivo de estilo e importar o estilo no componente. Também pode-se criar um estilo no próprio componente, mas não é recomendado.
+
+No arquivo de estilo (estilo.js):
+```
+import { StyleSheet } from 'react-native'
+
+export default StyleSheet.create({
+    fonteGrande: {
+        fontSize: 24
+    }
+})
+```
+
+No componente: 
+
+```
+import React from 'react'
+import { Text } from 'react-native'
+import Estilo from './estilo'
+
+export default (param) => {
+    return (
+        <Text style={Estilo.fonteGrande}> 
+            Testanto o estilo
+        </Text>
+    )
+}
+```
+
+# Componente com Propriedades
+
+No React, podemos passar pra uma função propriedades que são como parâmetros em uma função do python. A diferença é que pode-se passar vários valores em uma propriedade. veja no exemplo:
+
+Componente:
+
+```
+import React from 'react'
+import { Text } from 'react-native'
+import Estilo from './estilo'
+
+export default (porpriedades) => {
+    return (
+        <Text style={Estilo.fonteGrande}> 
+            O valor {porpriedades.max} é maior que o valor {porpriedades.min}
+        </Text>
+    )
+}
+```
+
+Chamando o componente:
+
+```
+export default () => (
+    <View style={style.App}>
+        <MinMax min="1" max="10"/>
+    </View>
+)
+```
+
+OBS: Propriedades são somente leitura!
+
+# React Fragment
+
+Não é possível carregar mais de um elemento fora de uma View. Quando necessitamos fazer isso usamos o Fragment. EX:
+
+```
+export default props => (
+    <React.Fragment>
+        <Text style={Estilo.fonteGrande}>{props.principal}</Text>
+        <Text>{props.secundario}</Text>
+    </React.Fragment>
+// Também podemos usar o <></> para fragmentar
+```
+
+# Criando Componente com Estado (useState)
+
+Para salvar o estado de um componente e fazê-lo ser atualizado na nossa aplicação, usamos a função `useState` (que é um tipo de `hook`). Por exemplo: Se queremos incrementar um valor a um determinado número, este valor será alterado mas não será atualizado na tela. O framework deve detectar quando há uma alteração em uma variável para atualizar seu valor na aplicação. Isso é feito pelo `useState`.
+
+
+
+
